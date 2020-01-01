@@ -1,0 +1,200 @@
+{% extends 'starter.html' %}
+
+{% block content %}
+    <style>
+
+        .pagination li {
+            width: 60px;
+            border: 0.5px solid #9f9f9f;
+            right: 0;
+
+        }
+
+        .active {
+            background-color: #0e84b5;
+        }
+
+        .pagination li a {
+            color: #000;
+            font-size: 16px;
+        }
+
+        #pagination_father {
+            position: relative;
+            padding-bottom: 50px !important;
+        }
+
+        .pagination {
+            position: absolute;
+            text-align: center;
+            right: 0;
+            margin-top: 10px;
+
+        }
+        .search_form{
+            position: absolute;
+            right: 0;
+        }
+
+        .edit-btn{
+            cursor: pointer;
+        }
+
+        .unregistered{
+            background-color: red;
+        }
+
+        .studying{
+            background-color: green;
+        }
+
+        .signed{
+            background-color: yellow;
+        }
+
+        .paid_in_full{
+            background-color: blue;
+        }
+
+
+    </style>
+
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>{{ label }}</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a class="btn btn-primary" id="add-btn" href="{% url 'add_customer' %}">添加客户</a>
+                        </li>
+
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <section class="content">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+
+                        <!-- 模糊查询的form表单  -->
+                        <form action="" method="get" class="pull-right search_form">
+
+                                <select name="field" id="s1" class="form-control"
+                                        style="display: inline-block;width: 100px">
+                                    <option value="name">姓名</option>
+                                    <option value="qq">qq</option>
+                                    <option value="phone">手机</option>
+                                    <option value="status">状态</option>
+                                </select>
+                                <input class="form-control" style="display: inline-block;width: 200px" type="text"
+                                       name="value">
+                                <button style="vertical-align: 0px" class="btn btn-success">search</button>
+
+                        </form>
+
+
+
+                        {# 批量处理#}
+                        <form action="{% url 'patch_action' %}" method="post">
+                            {% csrf_token %}
+
+                            <select name="action" id="" class="form-control" style="display: inline-block;width: 240px">
+                                <option value="patch_delete">请选择批量处理方法</option>
+                                <option value="patch_delete">删除客户</option>
+                                <option value="patch_reverse_public">公户转私户</option>
+                                <option value="patch_reverse_private">私户转公户</option>
+
+                            </select>
+
+                            <button style="vertical-align: 0px" class="btn btn-danger" id="operation_btn">go</button>
+
+
+                            <div class="card-body text-center" id='pagination_father'>
+
+                                <table id="example2" class="table table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th><input type="checkbox"></th>
+                                        <th>编号</th>
+                                        <th>客户姓名</th>
+                                        <th>性别</th>
+                                        <th>QQ</th>
+                                        <th>手机号</th>
+                                        <th>客户来源</th>
+                                        <th>咨询日期</th>
+                                        <th>当前状态</th>
+                                        <th>销售</th>
+                                        <th>所报班级</th>
+                                        <th>跟进记录</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for customer in customer_list %}
+                                        <tr>
+                                            <td><input type="checkbox" name="selected_pk_list"
+                                                       value="{{ customer.pk }}"></td>
+                                            <td>{{ forloop.counter|add:current_page_numbering }}</td>
+                                            <td>{{ customer.name }}</td>
+                                            <td>{{ customer.get_sex_display }}</td>
+                                            <td>{{ customer.qq }}</td>
+                                            <td>{{ customer.phone }}</td>
+                                            <td>{{ customer.get_source_display }}</td>
+                                            <td>{{ customer.date|date:'Y-m-d' }}</td>
+                                            <td class="{{customer.status}}">{{ customer.get_status_display }}</td>
+                                            <td>{{ customer.consultant }}</td>
+                                            <td>{{ customer.get_classlist }}</td>
+                                            <td><a href="{% url 'consult_records' %}?customer_id={{ customer.pk }}">跟进记录</a></td>
+                                            <td>
+                                                <a class="btn-sm btn-warning edit-btn" href="{% url 'edit_customer' customer.pk %}">编辑</a>
+                                                <a class="btn-sm btn-danger danger-btn" href="{% url 'del_customer' customer.pk %}">删除</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+
+                                    </tbody>
+
+
+                                </table>
+
+                                <ul class="pagination">
+                                    {{ pagination.page_html|safe }}
+                                </ul>
+                            </div>
+
+                        </form>
+
+
+                    </div>
+                    <!-- /.card-header -->
+
+
+                </div>
+
+
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+

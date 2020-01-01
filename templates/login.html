@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+</head>
+<body>
+
+    {% csrf_token %}
+
+    <div class="container">
+        <h4>登陆页面</h4>
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+
+                {# 账号输入框#}
+                <div class="form-group">
+                    <label for="">账号</label>
+                    <input type="text" class="form-control" id="user">
+                </div>
+
+                {# 密码输入框#}
+                <div class="form-group">
+                    <label for="">密码</label>
+                    <input type="text" class="form-control" id="pwd">
+                </div>
+
+                {#验证码输入框#}
+                <div class="form-group">
+                    <label for="">验证码</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="validcode">
+                        </div>
+
+                        <div class="col-md-6">
+                            <img src="{% url 'validcode' %}" alt="" id="validcode_img">
+                        </div>
+                    </div>
+
+                    <span class="error"></span>
+
+                </div>
+
+                <input type="button" class="btn btn-primary pull-right login_btn" value="提交">
+
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <script src="/static/js/jquery.js"></script>
+    <script>
+        $('.login_btn').click(function () {
+
+            $.ajax({
+                url:'',
+                type:'post',
+                data:{
+                    user : $('#user').val(),
+                    pwd : $('#pwd').val(),
+                    validcode : $('#validcode').val(),
+                    csrfmiddlewaretoken: $("[name = 'csrfmiddlewaretoken']").val()
+
+                },
+                success:function (response) {
+
+                    if (response.error_msg){
+                        $('.error').html(response.error_msg).css({'color' : 'red'})
+
+                    }else{
+                        location.href = '/index/'
+                    }
+
+
+                }
+            })
+
+
+        });
+
+
+        {#对验证码图片进行涮新，img标签的src加？就可以重新发送请求#}
+        $('#validcode_img').click(function () {
+
+            this.src += "?";
+
+        });
+    </script>
+
+</body>
+</html>

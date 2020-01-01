@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+</head>
+<body>
+
+    {% csrf_token %}
+
+    <div class="container">
+        <h4>注册页面</h4>
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+
+                {% for field in forms %}
+
+                    <div class="form-group">
+                        <label for="">{{field.label}}</label>
+                        {{field}}
+                        {# 真实错误信息#}
+                        <span class="error"></span>
+                    </div>
+
+
+                {% endfor %}
+
+
+                <input type="button" class="btn btn-primary pull-right" id="reg_btn" value="提交">
+
+            </div>
+
+
+        </div>
+    </div>
+
+
+    <script src="/static/js/jquery.js"></script>
+    <script>
+
+        $('#reg_btn').click(function () {
+
+            $.ajax({
+                url : "",
+                type : "post",
+                data : {
+                    username : $('#id_username').val(),
+                    password :  $('#id_password').val(),
+                    r_password : $('#id_r_password').val(),
+                    email : $('#id_email').val(),
+                    csrfmiddlewaretoken : $("[name = 'csrfmiddlewaretoken']").val()
+
+                },
+                success : function (response) {
+
+                    console.log(response);
+                    console.log(typeof response);
+
+                    if(response.user){
+                        {# 注册成功成功#}
+                        location.href = "/login/";
+                    }else {
+
+
+
+
+
+                        // 清除错误
+                        $(".error").html("");
+                        $(".form-group").removeClass("has-error");
+                        $.each(response.error_msg, function (index, ele) {
+
+                            $('#id_' + index).next().html(ele[0]).css('color', 'red').parent().addClass('has-error')
+
+                        });
+                    }
+                }
+            });
+
+
+        });
+
+
+    </script>
+
+</body>
+</html>

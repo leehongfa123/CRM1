@@ -1,0 +1,38 @@
+<nav class="mt-2">
+    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+        data-accordion="false">
+
+        {% for menu in menus.values %}
+            <li class="nav-item has-treeview  {{ menu.pclass }}">
+
+            {#     父级标签       #}
+            <a href="" class="nav-link active">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>
+                    {{menu.title}}
+                    <i class="right fas fa-angle-left"></i>
+                </p>
+            </a>
+
+
+            <ul class="nav nav-treeview">
+                {% for child in menu.children %}
+
+                    <li class="nav-item">
+                    <a href="{{ child.curl }}" class="nav-link {{ child.class }}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>{{ child.ctitle }}</p>
+                    </a>
+                </li>
+
+                {% endfor %}
+
+            </ul>
+        </li>
+        {% endfor %}
+
+
+
+
+    </ul>
+</nav>
